@@ -1,0 +1,32 @@
+Primeiramente você tem que instalar o AWS CLI no seu sistema operacional .
+ 
+Criar vpc - 
+aws ec2 create-vpc --cidr-block 10.100.1.0/16
+
+Criar subnet -
+aws ec2 create-subnet --cidr-block 10.100.1.0/24 --vpc-id $vpc --availability-zone us-east-1a
+
+Nome do banco - "DBAula"
+
+Unir as duas subnets para fazer um multi az , criando um banco de dados em alta disponibilidade
+
+Comando para unir as subnets -
+
+aws rds create-db-subnet-group --db-subnet-group-name "DBAula" --db-subnet-group-description "db subnet aula" --subnet-id $subnet1a $subnet1b
+
+Criar instacia RDS 
+
+aws rds create-db-instance `
+>> --db-instance-identifier dbexemplo `
+>> --allocated-storage 20 `
+>> --db-instance-class db.t2.micro `
+>> --engine mysql `
+>> --master-username root `
+>> --master-user-password 12qwaszx `
+>> --auto-minor-version-upgrade `
+>> --db-name dbexemplo `
+>> --no-multi-az `
+>> --preferred-maintenance-window sun:06:00-sun:7:00 `
+>> --no-publicly-accessible `
+>> --deletion-protection `
+>> --db-subnet-group-name "DBAula"
